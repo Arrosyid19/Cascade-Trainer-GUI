@@ -1,0 +1,30 @@
+# Lokasi video
+lokasi_video = "telur2.mp4"
+
+# lokaso classiefier cascade.xml
+lokasi_cascade = "telur.xml"
+
+#Buat Object VideoCapture dan baca file dari inputan
+camera = cv2.VideoCapture(lokasi_video)
+
+telur_cascade = cv2.CascadeClassifier(lokasi_cascade)
+
+while(camera.isOpened()):
+    # Tangkap frame by frame
+    ret,frame = camera.read()
+    # Convert menjadi gray
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    telur = telur_cascade.detectMultiScale(gray,scaleFactor = 1.1,minNeighbors=5,minSize=(30,30))
+    
+    for (x,y,w,h) in telur:
+        # Gambar persegi panjang disekitar area yang terdeteksi
+        cv2.rectangle(frame, (x,y), (x + w, y + h), (0,255,0), 2)
+    cv2.imshow("deteks", frame)
+
+    # Tekan Q di keyboard untuk keluar
+    if cv2.waitKey(25) & 0xFF == ord("q"):
+        break
+        
+camera.release()
+cv2.destroyAllWindows()
