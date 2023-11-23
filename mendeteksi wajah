@@ -1,0 +1,45 @@
+#lokasi foto
+lokasi_foto = 'anwar.jpg'
+#lokasi haarcascade wajah
+lokasi_haarcascade = 'haarcascade_frontalface_default.xml'
+
+#lokasi haarcascade wajah
+lokasi_haarcascade_mata = 'haarcascade_eye.xml'
+
+#memebaca gambar
+image = cv2.imread(lokasi_foto)
+
+#convert ke grayscale
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+face_classifier = cv2.CascadeClassifier(lokasi_haarcascade)
+
+eye_classifier = cv2.CascadeClassifier(lokasi_haarcascade_mata)
+
+#mendeteksi wajah
+faces = face_classifier.detectMultiScale(
+    gray,
+    scaleFactor = 1.1,
+    minNeighbors = 5
+)
+
+#gambar persegipanjang disekitar area yang terdeteksi
+for(x, y, w, h) in faces:
+    cv2.rectangle(image, (x,y), (x+w, y+h,), (0,255,0), 2)
+    #ambil bagian gambar yang sudah terdeteksi
+    roi_color = image[y:y+h, x:x+w]
+    roi_gray = gray[y:y+h, x:x+w]
+    
+#mendeteksi mata
+eyes = eye_classifier.detectMultiScale(
+    roi_gray,
+    scaleFactor = 1.1,
+    minNeighbors = 5
+)
+#gambar persegipanjang disekitar area yang terdeteksi
+for(x, y, w, h) in eyes:
+    cv2.rectangle(roi_color, (x,y), (x+w, y+h,), (0,255,0), 2)
+
+cv2.imshow("Hasil Deteksi", image)
+cv2.imshow("Hasil Area Wajah", roi_color)
+cv2.waitKey(0)
